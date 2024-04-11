@@ -12,6 +12,19 @@ function App() {
     if(counter > 0) setCounter(counter-1);
   }
 
+
+
+  //Counter Inteview Practices
+  const interViewFunctionTest = ()=>{
+    setCounter((prevConter)=> prevConter + 1);
+    setCounter((prevConter)=> prevConter + 1);
+    setCounter((prevConter)=> prevConter + 1);
+    setCounter((prevConter)=> prevConter + 1);
+    setCounter((prevConter)=> prevConter + 1);
+
+  }
+
+
   return (
     <>
 
@@ -21,6 +34,8 @@ function App() {
 
     <button onClick={increaseValue}>Increase</button>
     <button onClick={decreaseValue}>Decrease</button>
+
+    <button onClick={interViewFunctionTest}>Interview Test</button>
 
     </>
   )
