@@ -22,4 +22,4 @@ function customReactBuilder(reactElement,mainContainer) {
         domElement.setAttribute(prop,reactElement.props[prop])
     }
     mainContainer.appendChild(domElement);
-}
+}   
