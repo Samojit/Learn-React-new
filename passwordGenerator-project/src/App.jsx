@@ -1,38 +1,44 @@
-import { useState } from 'react'
+import { useState,useCallback,useEffect,useRef } from 'react'
 import './App.css'
 
 function App() {
   const [length, setLength] = useState(8);
-  const [isNumbers, setNumber] = useState(false);
-  const [charecters, setCharecters] = useState(false);
+  const [numberAllowed, setNumber] = useState(false);
+  const [charAllowed, setCharecters] = useState(false);
   const [Password, setPassword] = useState("");
 
-  function generateRandomPassword() {
-    const numbers = '0123456789';
-    const symbols = '!@#$%^&*()_+-=[]{}|;:,.<>?';
-    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 
-    /* let validChars = '';
-     if (options.hasNumbers) {
-         validChars += numbers;
-     }
-     if (options.hasSymbols) {
-         validChars += symbols;
-     }
-     if (options.hasLowercase) {
-         validChars += lowercaseLetters;
-     }
-     if (options.hasUppercase) {
-         validChars += uppercaseLetters;
-     }*/
+  const passwordRef = useRef(null);
 
-    let randomPassword = '';
-    for (let i = 0; i < length; i++) {
-      randomPassword += letters.charAt(Math.floor(Math.random() * letters.length));
+
+  const passwordGenerator = useCallback(() => {
+    let pass = ""
+    let str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+    if (numberAllowed) str += "0123456789"
+    if (charAllowed) str += "!@#$%^&*-_+=[]{}~`"
+
+    for (let i = 1; i <= length; i++) {
+      let char = Math.floor(Math.random() * str.length + 1)
+      pass += str.charAt(char)
+      
     }
-    return randomPassword;
-  }
 
+    setPassword(pass)
+
+
+  }, [length, numberAllowed, charAllowed, setPassword])
+
+  const copyPasswordToClipboard = useCallback(() => {
+
+    passwordRef.current?.select();
+    passwordRef.current?.setSelectionRange(0,100);
+    window.navigator.clipboard.writeText(Password)
+  },[Password]);
+
+
+  useEffect(()=>{
+    passwordGenerator();
+  },[length, charAllowed,numberAllowed, passwordGenerator])
 
   return (
     <div className="w-full max-w-md mx-auto shadow-md rounded-lg px-4 py-3 my-8 bg-gray-800 text-orange-500">
@@ -44,9 +50,10 @@ function App() {
           className="outline-none w-full py-1 px-3"
           placeholder="Password"
           readOnly
-        //ref={}
+          ref={passwordRef}
         />
         <button
+        onClick={copyPasswordToClipboard}
           className='outline-none bg-blue-700 text-white px-3 py-0.5 shrink-0'
         >copy</button>
 
@@ -66,7 +73,7 @@ function App() {
         <div className="flex items-center gap-x-1">
           <input
             type="checkbox"
-            defaultChecked={isNumbers}
+            defaultChecked={numberAllowed}
             id="numberInput"
             onChange={()=>{
               setNumber((prev) => !prev)
@@ -77,7 +84,7 @@ function App() {
         <div className="flex items-center gap-x-1">
           <input
             type="checkbox"
-            defaultChecked={charecters}
+            defaultChecked={charAllowed}
             id="characterInput"
             onChange={()=>{
               setCharecters((prev) => !prev)
